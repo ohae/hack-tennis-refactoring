@@ -4,102 +4,97 @@ namespace Hack.Lib
 {
     public class TennisGame2 : ITennisGame
     {
-        private int p1point;
-        private int p2point;
+        private int player1Point;
+        private int player2Point;
 
-        private string p1res = "";
-        private string p2res = "";
+        private string player1PointText;
+        private string player2PointText;
         private string player1Name;
         private string player2Name;
 
         public TennisGame2(string player1Name, string player2Name)
         {
             this.player1Name = player1Name;
-            p1point = 0;
+            this.player1Point = 0;
+            this.player1PointText = string.Empty;
+            
             this.player2Name = player2Name;
+            this.player2Point = 0;
+            this.player2PointText = string.Empty;
         }
 
+        private static string GetPointText(int tempScore)
+        {
+            string score = string.Empty;
+            switch (tempScore)
+            {
+                case 0:
+                    score = "Love";
+                    break;
+                case 1:
+                    score += "Fifteen";
+                    break;
+                case 2:
+                    score += "Thirty";
+                    break;
+                case 3:
+                    score += "Forty";
+                    break;
+            }
+            return score;
+        }
         public string GetScore()
         {
-            var score = "";
-            if (p1point == p2point && p1point < 3)
+            var score = string.Empty;
+            if (player1Point == player2Point && player1Point < 3)
             {
-                if (p1point == 0)
-                    score = "Love";
-                if (p1point == 1)
-                    score = "Fifteen";
-                if (p1point == 2)
-                    score = "Thirty";
-                score += "-All";
+                score = string.Format("{0}-All", GetPointText(player1Point));
             }
-            if (p1point == p2point && p1point > 2)
+            if (player1Point == player2Point && player1Point > 2)
                 score = "Deuce";
-
-            if (p1point > 0 && p2point == 0)
+            
+            if (player1Point > 0 && player2Point == 0)
             {
-                if (p1point == 1)
-                    p1res = "Fifteen";
-                if (p1point == 2)
-                    p1res = "Thirty";
-                if (p1point == 3)
-                    p1res = "Forty";
-
-                p2res = "Love";
-                score = p1res + "-" + p2res;
+                player1PointText = GetPointText(player1Point);
+                player2PointText = "Love";
+                score = string.Format("{0}-{1}", player1PointText, player2PointText);
             }
-            if (p2point > 0 && p1point == 0)
+            if (player2Point > 0 && player1Point == 0)
             {
-                if (p2point == 1)
-                    p2res = "Fifteen";
-                if (p2point == 2)
-                    p2res = "Thirty";
-                if (p2point == 3)
-                    p2res = "Forty";
-
-                p1res = "Love";
-                score = p1res + "-" + p2res;
+                player2PointText = GetPointText(player2Point);
+                player1PointText = "Love";
+                score = string.Format("{0}-{1}", player1PointText, player2PointText);
             }
 
-            if (p1point > p2point && p1point < 4)
+            if (player1Point > player2Point && player1Point < 4)
             {
-                if (p1point == 2)
-                    p1res = "Thirty";
-                if (p1point == 3)
-                    p1res = "Forty";
-                if (p2point == 1)
-                    p2res = "Fifteen";
-                if (p2point == 2)
-                    p2res = "Thirty";
-                score = p1res + "-" + p2res;
+                player1PointText = GetPointText(player1Point);
+                player2PointText = GetPointText(player2Point);
+
+                score = string.Format("{0}-{1}", player1PointText, player2PointText);
             }
-            if (p2point > p1point && p2point < 4)
+            if (player2Point > player1Point && player2Point < 4)
             {
-                if (p2point == 2)
-                    p2res = "Thirty";
-                if (p2point == 3)
-                    p2res = "Forty";
-                if (p1point == 1)
-                    p1res = "Fifteen";
-                if (p1point == 2)
-                    p1res = "Thirty";
-                score = p1res + "-" + p2res;
+                player2PointText = GetPointText(player2Point);
+                player1PointText = GetPointText(player1Point);
+
+                score = string.Format("{0}-{1}", player1PointText, player2PointText);
             }
 
-            if (p1point > p2point && p2point >= 3)
+            if (player1Point > player2Point && player2Point >= 3)
             {
                 score = "Advantage player1";
             }
-
-            if (p2point > p1point && p1point >= 3)
+            if (player2Point > player1Point && player1Point >= 3)
             {
                 score = "Advantage player2";
             }
 
-            if (p1point >= 4 && p2point >= 0 && (p1point - p2point) >= 2)
+            if (player1Point >= 4 && player2Point >= 0 && (player1Point - player2Point) >= 2)
             {
                 score = "Win for player1";
             }
-            if (p2point >= 4 && p1point >= 0 && (p2point - p1point) >= 2)
+            if (player2Point >= 4 && player1Point >= 0 && (player2Point - player1Point) >= 2)
             {
                 score = "Win for player2";
             }
@@ -108,9 +103,9 @@ namespace Hack.Lib
 
         public void SetP1Score(int number)
         {
-            for (int i = 0; i < number; i++)
+            for (var i = 0; i < number; i++)
             {
-                P1Score();
+                player1Point++;
             }
         }
 
@@ -118,26 +113,16 @@ namespace Hack.Lib
         {
             for (var i = 0; i < number; i++)
             {
-                P2Score();
+                player2Point++;
             }
-        }
-
-        private void P1Score()
-        {
-            p1point++;
-        }
-
-        private void P2Score()
-        {
-            p2point++;
         }
 
         public void WonPoint(string player)
         {
             if (player == "player1")
-                P1Score();
+                SetP1Score(1);
             else
-                P2Score();
+                SetP2Score(1);
         }
 
     }
